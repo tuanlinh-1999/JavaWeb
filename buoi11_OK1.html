@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        table, th, tr, td{
+            border: 1px solid black;
+        }
+        th, tr, td{
+            width: 150px;
+        }
+        table{
+            margin-top: 20px;
+        }
+    </style>
+    <label id="time">Time</label><br>
+    <input id="input"/>
+    <select id="cv">
+        <option value="Todo">Todo</option>
+        <option value="Done">Done</option>
+    </select>
+    <button onclick="main.add()">Add</button>
+    <button onclick="main.remove()">Remove</button>
+    <button onclick="main.update()">Update</button>
+    <table id="output">
+        <th>Tên</th>
+        <th>Công việc</th>
+        <th>Thời gian</th>
+    </table>
+    <script>
+        var time = 0;
+        function thoigian(){
+            var gio = new Date().getHours();
+            var phut = new Date().getMinutes();
+            var giay = new Date().getSeconds();
+            var thoigian = gio + ':' + phut + ':' + giay;
+            document.getElementById('time').innerHTML = thoigian;
+            time = thoigian;
+            setTimeout("thoigian()",1000);
+        }
+        thoigian();
+        var array = [];
+        var value;
+        var i=0;
+        var index1;
+        thongtin = function(ten, cv){
+            return{
+                ten: ten,
+                cv: cv,
+                thoigian: time,
+            }
+        }
+        function select(index){
+            document.getElementById('input').value = array[index].ten;
+            document.getElementById('cv').value = array[index].cv;
+            index1 = index;
+            console.log(index1);
+        }
+        function addTd(td,value){
+            var td = document.createElement('td');
+            var value = document.createTextNode(value);
+            td.appendChild(value);
+            return td;
+        }
+        function color(cv,color){
+            if(cv == 'Done') color.style.backgroundColor = "green";
+            if(cv == 'Todo') color.style.backgroundColor = "red";
+            setTimeout(function(){
+                if(cv =='Todo') color.style.backgroundColor = "green";               
+            },3000);
+        }
+        var main = {
+            add : function(){
+                var ten = document.getElementById('input').value;
+                var cv = document.getElementById('cv').value;
+                value = thongtin(ten,cv);
+                array.push(value);
+                console.log(array);
+                this.read();
+            },
+            read : function(){
+                var output = document.getElementById('output');
+                var tr = document.createElement('tr');
+                tr.id = "index("+i+")";
+                tr.setAttribute('onclick',"select("+i+")");
+                output.appendChild(tr);
+                var td1 = addTd('td',array[i].ten)
+                var td2 = addTd('td',array[i].cv)
+                var td3 = addTd('td',array[i].thoigian)
+                tr.appendChild(td1);
+                tr.appendChild(td2);
+                tr.appendChild(td3);
+                color(array[i].cv,tr);
+                i +=1;
+            },
+            remove: function(){
+                var remove = document.getElementById("index("+index1+")");
+                remove.remove();
+            },
+            update: function(){
+                var ten = document.getElementById('input').value;
+                var cv = document.getElementById('cv').value;
+                array[index1].ten = ten;
+                array[index1].cv = cv;
+                var ten_index1 = document.createTextNode(ten);
+                var cv_index1 = document.createTextNode(cv);
+                var name = document.getElementById("index("+index1+")").childNodes[0];
+                var status = document.getElementById("index("+index1+")").childNodes[1];
+                name.replaceChild(ten_index1, name.childNodes[0]);
+                status.replaceChild(cv_index1,status.childNodes[0]);
+                color(cv, document.getElementById("index("+index1+")"));
+            }
+        }
+    
+    </script>
+</body>
+</html>
